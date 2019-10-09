@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="e57d6a24-973e-4d4e-a8eb-7445e985ba7e" name="Default Changelist" comment="" />
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="JavaScript File" />
+      </list>
+    </option>
+  </component>
+  <component name="JsFlowSettings">
+    <service-enabled>true</service-enabled>
+    <exe-path />
+    <other-services-enabled>true</other-services-enabled>
+    <auto-save>true</auto-save>
+  </component>
+  <component name="ProjectId" id="1R90YowOVZg7drJc8iMh4tDx1dy" />
+  <component name="PropertiesComponent">
+    <property name="JavaScriptWeakerCompletionTypeGuess" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.path.for.package.eslint" value="project" />
+    <property name="node.js.selected.package.eslint" value="(autodetect)" />
+    <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
+    <property name="nodejs_npm_path_reset_for_default_project" value="true" />
+    <property name="nodejs_package_manager_path" value="npm" />
+    <property name="settings.editor.selected.configurable" value="com.eslint.settings.ESLintSettingsPage" />
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="e57d6a24-973e-4d4e-a8eb-7445e985ba7e" name="Default Changelist" comment="" />
+      <created>1569064054202</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1569064054202</updated>
+      <workItem from="1569064055357" duration="10213000" />
+      <workItem from="1569085839993" duration="9454000" />
+      <workItem from="1569235893446" duration="9801000" />
+      <workItem from="1569341891326" duration="948000" />
+      <workItem from="1569485497324" duration="1599000" />
+      <workItem from="1569568490919" duration="108000" />
+      <workItem from="1569829706001" duration="24000" />
+      <workItem from="1569830322766" duration="907000" />
+      <workItem from="1569831492013" duration="681000" />
+      <workItem from="1569834508464" duration="2766000" />
+      <workItem from="1569855517325" duration="1880000" />
+      <workItem from="1569859985493" duration="1552000" />
+      <workItem from="1569922580620" duration="8682000" />
+      <workItem from="1569995545763" duration="1621000" />
+      <workItem from="1570083949680" duration="691000" />
+      <workItem from="1570085433714" duration="5745000" />
+      <workItem from="1570203050704" duration="1315000" />
+      <workItem from="1570431123807" duration="24128000" />
+      <workItem from="1570609396921" duration="16620000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+</project>

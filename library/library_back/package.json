@@ -1,0 +1,33 @@
+{
+  "name": "library_back",
+  "version": "1.0.0",
+  "description": "GraphQL backend for library-application",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "watch": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "graphql",
+    "javascript"
+  ],
+  "author": "RedFoxFinn",
+  "license": "ISC",
+  "dependencies": {
+    "apollo-server": "^2.9.3",
+    "bcrypt": "^3.0.6",
+    "dotenv": "^8.1.0",
+    "graphql": "^14.5.6",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.7.1",
+    "mongoose-unique-validator": "^2.0.3",
+    "uuid": "latest"
+  },
+  "devDependencies": {
+    "nodemon": "^1.19.2"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  }
+}
