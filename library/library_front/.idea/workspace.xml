@@ -1,7 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="e57d6a24-973e-4d4e-a8eb-7445e985ba7e" name="Default Changelist" comment="" />
+    <list default="true" id="e57d6a24-973e-4d4e-a8eb-7445e985ba7e" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/../library_back/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../library_back/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../library_back/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../library_back/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../library_back/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../library_back/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/../library_back/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../library_back/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/../library_back/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/index.js" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -15,6 +27,9 @@
       </list>
     </option>
   </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
+  </component>
   <component name="JsFlowSettings">
     <service-enabled>true</service-enabled>
     <exe-path />
@@ -22,8 +37,10 @@
     <auto-save>true</auto-save>
   </component>
   <component name="ProjectId" id="1R90YowOVZg7drJc8iMh4tDx1dy" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="PropertiesComponent">
     <property name="JavaScriptWeakerCompletionTypeGuess" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="node.js.detected.package.eslint" value="true" />
@@ -74,11 +91,23 @@
       <workItem from="1570085433714" duration="5745000" />
       <workItem from="1570203050704" duration="1315000" />
       <workItem from="1570431123807" duration="24128000" />
-      <workItem from="1570609396921" duration="16620000" />
+      <workItem from="1570609396921" duration="18672000" />
+      <workItem from="1572010090015" duration="4234000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
 </project>

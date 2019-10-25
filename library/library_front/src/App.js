@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {BrowserRouter as Router, Route, Redirect} from 'react-router-dom';
 import gql from 'graphql-tag';
-import {useQuery, useMutation, useApolloClient} from '@apollo/react-hooks';
+import {useQuery, useMutation, useApolloClient, useSubscription} from '@apollo/react-hooks';
 import Authors from './components/Authors';
 import Books from './components/Books';
 import Recommendations from './components/Recommendations';
@@ -124,6 +124,33 @@ const GENRES = gql`
   }
 `;
 
+const BOOK_ADDED = gql`
+  subscription {
+    bookAdded {
+      ...BookDetails
+    }
+  }
+  ${BOOK_DETAILS}
+`;
+
+const AUTHOR_ADDED = gql`
+  subscription {
+    authorAdded {
+      ...AuthorDetails
+    }
+  }
+  ${AUTHOR_DETAILS}
+`;
+
+const AUTHOR_EDITED = gql`
+  subscription {
+    authorEdited {
+      ...AuthorDetails
+    }
+  }
+  ${AUTHOR_DETAILS}
+`;
+
 const App = () => {
   const client = useApolloClient();
   const [token, setToken] = useState(null);
@@ -148,11 +175,15 @@ const App = () => {
   const genres = useQuery(GENRES);
   const [addBook] = useMutation(ADD_BOOK, {
     onError: handleError,
-    refetchQueries: [{query: ALL_BOOKS}, {query: ALL_AUTHORS}, {query: GENRES}]
+    update: (store, response) => {
+      updateCacheWithBook(response.data.addBook);
+    }
   });
   const [editBorn] = useMutation(EDIT_BORN, {
     onError: handleError,
-    refetchQueries: [{query: ALL_AUTHORS}]
+    update: (store, response) => {
+      updateCacheWithAuthor(response.data.editBorn);
+    }
   });
   const [login] = useMutation(LOGIN, {
     onError: handleError,
@@ -163,12 +194,75 @@ const App = () => {
     refetchQueries: [{query: ALL_BOOKS}, {query: ALL_AUTHORS}]
   });
 
+  useSubscription(BOOK_ADDED, {
+    onSubscriptionData: ({subscriptionData}) => {
+      const addedBook = subscriptionData.data.bookAdded;
+      handleInfo(`${addedBook.title} added`);
+      updateCacheWithBook(addedBook);
+    }
+  });
+
+  useSubscription(AUTHOR_ADDED, {
+    onSubscriptionData: ({subscriptionData}) => {
+      const addedAuthor = subscriptionData.data.authorAdded;
+      handleInfo(`${addedAuthor.name} added`);
+      updateCacheWithAuthor(addedAuthor);
+    }
+  });
+
+  useSubscription(AUTHOR_EDITED, {
+    onSubscriptionData: ({subscriptionData}) => {
+      const editedAuthor = subscriptionData.data.authorEdited;
+      handleInfo(`${editedAuthor.name} edited`);
+      updateCacheWithAuthor(editedAuthor);
+    }
+  });
+
   useEffect(() => {
     const localToken = localStorage.getItem('libraryUserToken');
     if (localToken) {
       setToken(localToken);
     }
   }, [setToken]);
+
+  const updateCacheWithBook = (addedBook) => {
+    const includedIn = (set, object) => set.map(b => b.id).includes(object.id);
+    const dataInStore = client.readQuery({query: ALL_BOOKS});
+
+    console.log(addedBook);
+
+    if (!includedIn(dataInStore.allBooks, addedBook)) {
+      client.writeQuery({
+        query: ALL_BOOKS,
+        data: {allBooks: dataInStore.allBooks.concat(addedBook)}
+      });
+    }
+  };
+
+  const updateCacheWithAuthor = (author) => {
+    const includedIn = (set, object) => set.map(a => a.id).includes(object.id);
+    const dataInStore = client.readQuery({query: ALL_AUTHORS});
+
+    console.log(author);
+
+    if (!includedIn(dataInStore.allAuthors, author)) {
+      client.writeQuery({
+        query: ALL_AUTHORS,
+        data: {allAuthors: dataInStore.allAuthors.concat(author)}
+      });
+    } else {
+      const allAuthors = dataInStore.allAuthors.map(a => {
+        if (a.name === author.name) {
+          return author;
+        }
+        return a;
+      });
+      client.writeQuery({
+        query: ALL_AUTHORS,
+        data: {allAuthors: allAuthors}
+      });
+    }
+  };
 
   const handleLogin = async (event, username, password) => {
     event.preventDefault();

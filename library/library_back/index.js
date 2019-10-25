@@ -1,17 +1,20 @@
 const { ApolloServer, UserInputError, AuthenticationError, gql } = require('apollo-server');
 const mongoose = require('mongoose');
-const uuid = require('uuid/v1');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
+const { PubSub } = require('apollo-server');
 const Author = require('./models/Author');
 const Book = require('./models/Book');
 const User = require('./models/User');
 const config = require('./utils/config');
+const pubsub = new PubSub();
 
+// mongoose options
 mongoose.set('useFindAndModify', false);
 mongoose.set('useNewUrlParser', true);
 mongoose.set('useUnifiedTopology', true);
 
+// connecting to cloud mongo
 mongoose.connect(config.MONGODB_URI).then(res => {
   if (res.error) {
     console.error('Mongoose connection - failure');
@@ -105,11 +108,7 @@ let books = [
  * For simplicity we however save the author name.
 */
 
-const authorBookCount = (author) => {
-  const dbAuthor = Author.findOne({name: author});
-  return Book.find({author: dbAuthor._id}).count();
-};
-
+// arrow function for finding books from library database with args or without
 const findBooks = (args) => {
   if (args.author) {
     return Book.find({}).populate('author').then(result => {
@@ -124,6 +123,7 @@ const findBooks = (args) => {
   }
 };
 
+// arrow function for finding authors from library database with args or without
 const findAuthor = (args) => {
   if (args.title) {
     return Book.find({title: args.title}).then(result => {
@@ -140,6 +140,7 @@ const findAuthor = (args) => {
   }
 };
 
+// arrow function for finding users from library database with args or without
 const findUsers = (args) => {
   if (args.username) {
     return User.find({username: args.username});
@@ -150,10 +151,12 @@ const findUsers = (args) => {
   }
 };
 
+// password hashing arrow function for new user creation
 const hash = (password) => {
   return bcrypt.hash(password, 10);
 };
 
+// GraphQL type definitions
 const typeDefs = gql`
   type User {
     username: String!
@@ -191,33 +194,22 @@ const typeDefs = gql`
     genres: [String!]!
   }
   type Mutation {
-    addBook(
-      title: String!
-      published: Int!
-      author: String!
-      genres: [String!]!
-    ): Book
-    editAuthor(
-      name: String!
-      setBornTo: Int!
-    ): Author
-    addAuthor(
-      name: String!
-      born: Int
-    ): Author
-    createUser(
-      username: String!
-      password: String!
-      verifyPassword: String!
-      favoriteGenre: String!
-    ): User
-    login(
-      username: String!
-      password: String!
-    ): Token!
+    addBook(title: String! published: Int!
+      author: String! genres: [String!]!): Book
+    editAuthor(name: String! setBornTo: Int!): Author
+    addAuthor(name: String! born: Int): Author
+    createUser(username: String! password: String!
+      verifyPassword: String! favoriteGenre: String!): User
+    login(username: String! password: String!): Token!
+  }
+  type Subscription {
+    authorEdited: Author!
+    authorAdded: Author!
+    bookAdded: Book!
   }
 `;
 
+// GraphQL resolvers
 const resolvers = {
   Query: {
     bookCount: () => Book.collection.countDocuments(),
@@ -267,71 +259,77 @@ const resolvers = {
     addBook: async (root, args, context) => {
       const author = await Author.findOne({name: args.author});
       const user = context.user;
-      if (user && !author) {
-        const newBook = new Book({
+      if (!user) {
+        throw new AuthenticationError('session error: not logged in');
+      }
+      let newBook;
+      if (!author) {
+        const newAuthor = await new Author({name: args.author}).save();
+        pubsub.publish('AUTHOR_ADDED', { authorAdded: newAuthor });
+        newBook = new Book({
           title: args.title,
           published: args.published,
-          author: await new Author({name: args.author}).save()._id,
+          author: newAuthor._id,
           genres: args.genres
         });
-        try {
-          return await newBook.save();
-        } catch (e) {
-          throw new UserInputError(e.message, {invalidArgs: args});
-        }
-      } else if (user) {
-        const newBook = new Book({
+        console.log(newBook);
+      } else {
+        newBook = new Book({
           title: args.title,
           published: args.published,
           author: author._id,
           genres: args.genres
         });
-        try {
-          return await newBook.save();
-        } catch (e) {
-          throw new UserInputError(e.message, {invalidArgs: args});
-        }
-      } else {
-        throw new AuthenticationError('session error: not logged in');
+        console.log(newBook);
       }
+      try {
+        await newBook.save();
+      } catch (e) {
+        throw new UserInputError(e.message, {invalidArgs: args});
+      }
+      pubsub.publish('BOOK_ADDED', { bookAdded: newBook });
+      return newBook;
     },
     editAuthor: async (root, args, context) => {
       const author = await Author.findOne({name: args.name});
       const user = context.user;
-      if (user && !author) {
-        const newAuthor = new Author({
+      if (!user) {
+        throw new AuthenticationError('session error: not logged in');
+      }
+      let useAuthor;
+      if (!author) {
+        useAuthor = new Author({
           name: args.name,
           born: args.setBornTo
         });
-        try {
-          return await newAuthor.save();
-        } catch (e) {
-          throw new UserInputError(e.message, {invalidArgs: args});
-        }
-      } else if (user) {
-        author.born = args.setBornTo;
-        try {
-          return await author.save();
-        } catch (e) {
-          throw new UserInputError(e.message, {invalidArgs: args});
-        }
       } else {
-        throw new AuthenticationError('session error: not logged in');
+        useAuthor = author;
+        useAuthor.born = args.setBornTo;
       }
+      try {
+        await useAuthor.save();
+      } catch (e) {
+        throw new UserInputError(e.message, {invalidArgs: args});
+      }
+      pubsub.publish('AUTHOR_EDITED', { authorEdited: useAuthor });
+      return useAuthor;
     },
     addAuthor: async (root, args, context) => {
-      const author = await Author.findOne({name: args.author});
       const user = context.user;
-      if (user && !author) {
-        return await new Author({
-          name: args.name,
-          born: args.born
-        }).save();
-      } else if (user) {
-        throw new UserInputError('author already exists');
-      } else {
+      if (!user) {
         throw new AuthenticationError('session error: not logged in');
       }
+      let newAuthor = new Author({
+        name: args.name,
+        born: args.born
+      });
+      try {
+        await newAuthor.save();
+      } catch (e) {
+        throw new UserInputError(e.message, {invalidArgs: args});
+      }
+      pubsub.publish('AUTHOR_ADDED', { authorAdded: newAuthor });
+      return newAuthor;
     },
     createUser: async (root, args) => {
       const newUser = args.password === args.verifyPassword && new User({
@@ -356,9 +354,21 @@ const resolvers = {
       }
       throw new AuthenticationError('Incorrect username or password');
     },
+  },
+  Subscription: {
+    authorEdited: {
+      subscribe: () => pubsub.asyncIterator(['AUTHOR_EDITED'])
+    },
+    authorAdded: {
+      subscribe: () => pubsub.asyncIterator(['AUTHOR_ADDED'])
+    },
+    bookAdded: {
+      subscribe: () => pubsub.asyncIterator(['BOOK_ADDED'])
+    }
   }
 };
 
+// Defining Apollo-server
 const server = new ApolloServer({
   typeDefs,
   resolvers,
@@ -372,6 +382,8 @@ const server = new ApolloServer({
   }
 });
 
-server.listen().then(({ url }) => {
-  console.log(`Server ready at ${url}`)
+// Starting Apollo-server
+server.listen().then(({ url, subscriptionsUrl }) => {
+  console.log(`Server ready at ${url}`);
+  console.log(`Subscriptions ready at ${subscriptionsUrl}`);
 });
